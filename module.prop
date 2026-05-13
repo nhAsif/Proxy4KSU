@@ -1,0 +1,7 @@
+id=proxy4ksu
+name=Proxy4KSU
+version=v3.4.6
+versionCode=20241111
+author=nhAsif
+description=System Proxy
+updateJson=https://raw.githubusercontent.com/nhAsif/Proxy4KSU/master/update.json

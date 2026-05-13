@@ -1,0 +1,36 @@
+{
+    "dns": {
+        "servers": [
+            {
+                "tag": "default",
+                "address": "223.5.5.5",
+                "detour": "direct"
+            },
+            {
+                "tag": "cloudflare",
+                "address": "https://1.1.1.1/dns-query",
+                "detour": "proxy"
+            }
+        ],
+        "rules": [
+            {
+                "outbound": "any",
+                "server": "default"
+            },
+            {
+                "rule_set": [
+                    "geosite-google"
+                ],
+                "server": "cloudflare"
+            },
+            {
+                "rule_set": [
+                    "geosite-cn"
+                ],
+                "server": "default"
+            }
+        ],
+        "final": "cloudflare",
+        "strategy": "ipv4_only"
+    }
+}

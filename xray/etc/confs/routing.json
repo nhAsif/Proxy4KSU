@@ -1,0 +1,45 @@
+{
+    "routing": {
+        "domainStrategy": "AsIs",
+        "rules": [
+            {
+                "type": "field",
+                "inboundTag": [
+                    "proxy-in",
+                    "socks-in"
+                ],
+                "port": 53,
+                "outboundTag": "dns-out"
+            },
+            {
+                "domain": [
+                    "geosite:google",
+                    "geosite:geolocation-!cn"
+                ],
+                "outboundTag": "proxy",
+                "type": "field"
+            },
+            {
+                "domain": [
+                    "geosite:apple-cn",
+                    "geosite:cn"
+                ],
+                "outboundTag": "direct",
+                "type": "field"
+            },
+            {
+                "ip": [
+                    "geoip:cn",
+                    "geoip:private"
+                ],
+                "outboundTag": "direct",
+                "type": "field"
+            },
+            {
+                "network": "tcp,udp",
+                "outboundTag": "proxy",
+                "type": "field"
+            }
+        ]
+    }
+}
