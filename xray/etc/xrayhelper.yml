@@ -23,7 +23,7 @@ proxy:
     tproxyPort: 65535
     socksPort: 65534
     tunDevice: xtun
-    enableIPv6: false
+    enableIPv6: true
     autoDNSStrategy: true
     mode: blacklist
     pkgList:
