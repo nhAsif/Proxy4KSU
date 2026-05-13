@@ -786,21 +786,33 @@ const convertObject = (arr, custom) => {
     return convertArr;
 }
 const initXrayData = async () => {
-    await callApi(`get switch all`).then(value => {
-        const custom = Array.isArray(value.custom) ? value.custom : [];
-        const result = Array.isArray(value.result) ? value.result : [];
+    const [customResponse, subscribeResponse] = await Promise.allSettled([
+        callApi(`get switch custom`),
+        callApi(`get switch`),
+    ])
+    let loaded = false
+    if (customResponse.status === 'fulfilled') {
+        const custom = Array.isArray(customResponse.value.result) ? customResponse.value.result : [];
         if (custom.length > 0) {
-            const customData = convertObject(custom, true);
-            allNodeList.value.push(...customData);
+            const customData = convertObject(custom, true)
+            allNodeList.value.push(...customData)
             showNodeList.value.push(...customData)
+            loaded = true
         }
-        const nodeData = convertObject(result, false);
-        allNodeList.value.push(...nodeData);
-        showNodeList.value.push(...nodeData);
-        console.info('initXrayData complete')
-    }).catch(ex => {
-        showToast(t('manage.load-switch-data-failed') + ex)
-    })
+    }
+    if (subscribeResponse.status === 'fulfilled') {
+        const result = Array.isArray(subscribeResponse.value.result) ? subscribeResponse.value.result : [];
+        if (result.length > 0) {
+            const nodeData = convertObject(result, false)
+            allNodeList.value.push(...nodeData)
+            showNodeList.value.push(...nodeData)
+            loaded = true
+        }
+    }
+    if (!loaded && customResponse.status === 'rejected' && subscribeResponse.status === 'rejected') {
+        showToast(t('manage.load-switch-data-failed') + customResponse.reason + '; ' + subscribeResponse.reason)
+    }
+    console.info('initXrayData complete')
 }
 const onLoad = async () => {
     console.info('onLoad');

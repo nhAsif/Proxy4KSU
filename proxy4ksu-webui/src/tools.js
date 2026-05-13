@@ -49,7 +49,7 @@ export const callApi = async (api) => {
     }
     let params = ["-c", XRAYHELPER, "-c", XRAYHELPER_CONFIG, "-t", "3", "api"]
     params.push(...api)
-    const timeoutMs = api[0] === "misc" && api[1] === "realping" ? 120000 : 10000
+    const timeoutMs = api[0] === "misc" && api[1] === "realping" ? 120000 : 60000
     return await new Promise((resolve, reject) => {
         let stdout = ""
         let stderr = ""
