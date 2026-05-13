@@ -34,7 +34,7 @@
                 </van-space>
             </template>
         </van-nav-bar>
-        <van-list v-model:loading="loading" :finished="finished" :finished-text="t('manage.no-more')">
+        <van-list v-model:loading="loading" :finished="finished" :finished-text="t('manage.no-more')" @load="onLoad">
             <van-cell-group style="top: 46px;">
                 <van-cell v-for="(item, index) in showNodeList" :key="index" center>
                     <template #title>
@@ -256,6 +256,7 @@ const onSelect = (action) => {
 }
 const loading = ref(false);
 const finished = ref(false);
+let isLoading = false;
 const nodeName = ref('')
 const searchText = ref(false);
 
@@ -815,7 +816,11 @@ const initXrayData = async () => {
     console.info('initXrayData complete')
 }
 const onLoad = async () => {
+    if (isLoading) {
+        return;
+    }
     console.info('onLoad');
+    isLoading = true;
     loading.value = true;
     finished.value = false;
     showNodeList.value = [];
@@ -825,6 +830,7 @@ const onLoad = async () => {
     } finally {
         loading.value = false;
         finished.value = true;
+        isLoading = false;
     }
 }
 const getConfig = async () => {
@@ -854,7 +860,11 @@ const initStatus = () => {
                 actions.push({text: t('manage.ruleset-manage'), value: 'ruleset', disabled: false})
             }
             if (core_type === 'xray' || core_type === 'sing-box') {
-                onLoad()
+                // van-list will auto-trigger @load via immediate-check;
+                // only manually trigger if the list is already finished (e.g. refresh after save)
+                if (finished.value) {
+                    onLoad()
+                }
             }
         }
     })
