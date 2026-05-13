@@ -5,6 +5,8 @@
     </van-popup>
 </template>
 <script setup>
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 const show = defineModel('show', {type: Boolean, required: true})
 const stdout = defineModel('stdout', {type: String, required: true})
 </script>

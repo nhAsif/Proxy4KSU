@@ -786,19 +786,42 @@ const convertObject = (arr, custom) => {
     return convertArr;
 }
 const initXrayData = async () => {
-    await callApi(`get switch all`).then(value => {
-        if (value.custom.length > 0) {
-            const customData = convertObject(value.custom, true);
+    // NOTE: 'get switch all' is broken due to a package-level cache bug in rayswitch.go:
+    // loadShareUrl() has an early-return guard "if len(shareUrls) > 0 { return nil }"
+    // which causes the second get() call within the same switch instance to return
+    // wrong (already-cached) data. Two separate sequential calls each spawn a fresh
+    // process with a new switch instance, bypassing this bug entirely.
+
+    // Load custom nodes first (get switch custom → {result: customNodes})
+    try {
+        const customResponse = await callApi(`get switch custom`);
+        const custom = Array.isArray(customResponse.result) ? customResponse.result : [];
+        if (custom.length > 0) {
+            const customData = convertObject(custom, true);
             allNodeList.value.push(...customData);
-            showNodeList.value.push(...customData)
+            showNodeList.value.push(...customData);
         }
-        const nodeData = convertObject(value.result, false);
-        allNodeList.value.push(...nodeData);
-        showNodeList.value.push(...nodeData);
-        console.info('initXrayData complete')
-    }).catch(ex => {
-        showToast(t('manage.load-switch-data-failed') + ex)
-    })
+    } catch (ex) {
+        console.info('get switch custom failed (may be empty): ' + ex);
+    }
+
+    // Load subscribe nodes second (get switch → {result: subscribeNodes})
+    try {
+        const subscribeResponse = await callApi(`get switch`);
+        const result = Array.isArray(subscribeResponse.result) ? subscribeResponse.result : [];
+        if (result.length > 0) {
+            const nodeData = convertObject(result, false);
+            allNodeList.value.push(...nodeData);
+            showNodeList.value.push(...nodeData);
+        }
+    } catch (ex) {
+        console.info('get switch failed (may be empty): ' + ex);
+    }
+
+    if (allNodeList.value.length === 0) {
+        showToast(t('manage.load-switch-data-failed'));
+    }
+    console.info('initXrayData complete');
 }
 const onLoad = async () => {
     console.info('onLoad');
