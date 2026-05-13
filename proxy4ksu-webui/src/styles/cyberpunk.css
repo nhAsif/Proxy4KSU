@@ -1,0 +1,486 @@
+:root {
+    color-scheme: dark;
+    --cyber-background: #0a0a0f;
+    --cyber-foreground: #e0e0e0;
+    --cyber-card: #12121a;
+    --cyber-muted: #1c1c2e;
+    --cyber-muted-foreground: #8a91a3;
+    --cyber-accent: #00ff88;
+    --cyber-accent-secondary: #ff00ff;
+    --cyber-accent-tertiary: #00d4ff;
+    --cyber-border: #2a2a3a;
+    --cyber-input: #12121a;
+    --cyber-destructive: #ff3366;
+    --cyber-shadow-neon: 0 0 5px #00ff88, 0 0 10px #00ff8840;
+    --cyber-shadow-neon-sm: 0 0 3px #00ff88, 0 0 6px #00ff8830;
+    --cyber-shadow-neon-lg: 0 0 10px #00ff88, 0 0 20px #00ff8860, 0 0 40px #00ff8830;
+    --cyber-shadow-magenta: 0 0 5px #ff00ff, 0 0 20px #ff00ff60;
+    --cyber-shadow-cyan: 0 0 5px #00d4ff, 0 0 20px #00d4ff60;
+    --cyber-chamfer: polygon(0 10px, 10px 0, calc(100% - 10px) 0, 100% 10px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%, 0 calc(100% - 10px));
+    --cyber-chamfer-sm: polygon(0 7px, 7px 0, calc(100% - 7px) 0, 100% 7px, 100% calc(100% - 7px), calc(100% - 7px) 100%, 7px 100%, 0 calc(100% - 7px));
+    --van-primary-color: var(--cyber-accent);
+    --van-success-color: var(--cyber-accent);
+    --van-danger-color: var(--cyber-destructive);
+    --van-warning-color: #ffcc00;
+    --van-text-color: var(--cyber-foreground);
+    --van-text-color-2: #b8bfcc;
+    --van-text-color-3: var(--cyber-muted-foreground);
+    --van-active-color: rgba(0, 255, 136, 0.13);
+    --van-background: var(--cyber-background);
+    --van-background-2: var(--cyber-card);
+    --van-background-3: var(--cyber-muted);
+    --van-border-color: var(--cyber-border);
+    --van-cell-background: transparent;
+    --van-cell-group-background: var(--cyber-card);
+    --van-cell-group-inset-padding: 0 12px;
+    --van-cell-text-color: var(--cyber-foreground);
+    --van-cell-value-color: var(--cyber-accent-tertiary);
+    --van-cell-label-color: var(--cyber-muted-foreground);
+    --van-button-default-background: transparent;
+    --van-button-default-border-color: var(--cyber-accent);
+    --van-button-default-color: var(--cyber-accent);
+    --van-button-border-radius: 0;
+    --van-field-input-text-color: var(--cyber-accent);
+    --van-field-placeholder-text-color: var(--cyber-muted-foreground);
+    --van-nav-bar-background: rgba(10, 10, 15, 0.9);
+    --van-nav-bar-title-text-color: var(--cyber-accent);
+    --van-nav-bar-icon-color: var(--cyber-accent);
+    --van-tabbar-background: rgba(10, 10, 15, 0.94);
+    --van-tabbar-item-active-background: rgba(0, 255, 136, 0.08);
+    --van-tabbar-item-active-color: var(--cyber-accent);
+    --van-popup-background: var(--cyber-card);
+    --van-popover-action-text-color: var(--cyber-foreground);
+    --van-popover-action-background: var(--cyber-card);
+    --van-tag-border-radius: 0;
+    --van-radius-md: 0;
+    --van-radius-lg: 0;
+    --van-font: "JetBrains Mono", "Fira Code", Consolas, monospace;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+    min-height: 100%;
+    margin: 0;
+    background: var(--cyber-background);
+}
+
+body {
+    color: var(--cyber-foreground);
+    font-family: var(--van-font);
+    letter-spacing: 0;
+    background:
+        radial-gradient(circle at 15% 5%, rgba(255, 0, 255, 0.18), transparent 26rem),
+        radial-gradient(circle at 90% 15%, rgba(0, 212, 255, 0.14), transparent 22rem),
+        linear-gradient(rgba(0, 255, 136, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 136, 0.035) 1px, transparent 1px),
+        var(--cyber-background);
+    background-size: auto, auto, 48px 48px, 48px 48px, auto;
+}
+
+body::before,
+body::after {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    pointer-events: none;
+    content: "";
+}
+
+body::before {
+    opacity: 0.38;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.34) 2px, rgba(0, 0, 0, 0.34) 4px);
+}
+
+body::after {
+    opacity: 0.08;
+    background:
+        linear-gradient(90deg, rgba(255, 0, 255, 0.45), transparent 18%, transparent 82%, rgba(0, 212, 255, 0.45)),
+        radial-gradient(circle at center, transparent 0, rgba(255, 255, 255, 0.16) 1px, transparent 1px);
+    background-size: auto, 3px 3px;
+    mix-blend-mode: screen;
+}
+
+button,
+input,
+textarea {
+    font: inherit;
+}
+
+.app-shell {
+    min-height: 100vh;
+}
+
+.cyber-page {
+    position: relative;
+    min-height: calc(100vh - 96px);
+    padding: 14px 0 22px;
+}
+
+.cyber-hero {
+    position: relative;
+    margin: 14px 12px 18px;
+    padding: 18px 16px 16px;
+    overflow: hidden;
+    color: var(--cyber-foreground);
+    background:
+        linear-gradient(135deg, rgba(18, 18, 26, 0.92), rgba(10, 10, 15, 0.92)),
+        linear-gradient(90deg, rgba(0, 255, 136, 0.08), transparent 42%, rgba(255, 0, 255, 0.08));
+    border: 1px solid rgba(0, 255, 136, 0.42);
+    clip-path: var(--cyber-chamfer);
+    box-shadow: var(--cyber-shadow-neon-sm);
+}
+
+.cyber-hero::before {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    content: "";
+    background:
+        linear-gradient(90deg, transparent 0 12%, rgba(0, 255, 136, 0.12) 12% 12.5%, transparent 12.5% 52%, rgba(0, 212, 255, 0.12) 52% 52.5%, transparent 52.5%),
+        repeating-linear-gradient(90deg, transparent 0 11px, rgba(0, 255, 136, 0.06) 11px 12px);
+}
+
+.cyber-kicker {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 8px;
+    font-family: "Share Tech Mono", var(--van-font);
+    font-size: 0.72rem;
+    color: var(--cyber-accent-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+}
+
+.cyber-kicker::before {
+    width: 8px;
+    height: 8px;
+    content: "";
+    background: var(--cyber-accent);
+    box-shadow: var(--cyber-shadow-neon);
+}
+
+.cyber-title {
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    font-family: Orbitron, "Share Tech Mono", var(--van-font);
+    font-size: clamp(1.55rem, 8vw, 2.75rem);
+    font-weight: 900;
+    line-height: 0.96;
+    color: var(--cyber-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-shadow: -2px 0 var(--cyber-accent-secondary), 2px 0 var(--cyber-accent-tertiary), 0 0 18px rgba(0, 255, 136, 0.35);
+    animation: rgbShift 4.8s steps(2, end) infinite;
+}
+
+.cyber-subtitle {
+    position: relative;
+    z-index: 1;
+    max-width: 38rem;
+    margin: 10px 0 0;
+    color: #b8bfcc;
+    line-height: 1.65;
+}
+
+.cyber-subtitle::before {
+    color: var(--cyber-accent);
+    content: "> ";
+}
+
+.cyber-subtitle::after {
+    display: inline-block;
+    width: 0.6em;
+    color: var(--cyber-accent);
+    content: "_";
+    animation: blink 1s step-end infinite;
+}
+
+.cyber-page .van-cell-group--inset {
+    position: relative;
+    margin: 14px 12px;
+    overflow: hidden;
+    border: 1px solid var(--cyber-border);
+    clip-path: var(--cyber-chamfer);
+    box-shadow: inset 0 0 0 1px rgba(0, 255, 136, 0.025);
+}
+
+.cyber-page .van-cell-group--inset::before {
+    display: block;
+    height: 26px;
+    content: "";
+    background:
+        radial-gradient(circle at 16px 13px, #ff3366 0 4px, transparent 4.5px),
+        radial-gradient(circle at 34px 13px, #ffcc00 0 4px, transparent 4.5px),
+        radial-gradient(circle at 52px 13px, #00ff88 0 4px, transparent 4.5px),
+        linear-gradient(90deg, rgba(0, 255, 136, 0.09), rgba(255, 0, 255, 0.08));
+    border-bottom: 1px solid var(--cyber-border);
+}
+
+.van-cell-group__title {
+    padding: 18px 16px 4px;
+    font-family: "Share Tech Mono", var(--van-font);
+    font-size: 0.75rem;
+    color: var(--cyber-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+}
+
+.van-cell {
+    align-items: center;
+    min-height: 54px;
+    padding: 12px 14px;
+    background: linear-gradient(90deg, rgba(0, 255, 136, 0.018), transparent 32%);
+    border-bottom: 1px solid rgba(42, 42, 58, 0.86);
+}
+
+.van-cell:last-child {
+    border-bottom: 0;
+}
+
+.van-cell::after {
+    display: none;
+}
+
+.van-cell__title {
+    min-width: 0;
+    font-size: 0.86rem;
+    color: var(--cyber-foreground);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.van-cell__value {
+    min-width: 0;
+    font-family: "Share Tech Mono", var(--van-font);
+    font-size: 0.84rem;
+    color: var(--cyber-accent-tertiary);
+    word-break: break-word;
+}
+
+.van-cell__label {
+    margin-top: 7px;
+    color: var(--cyber-muted-foreground);
+}
+
+.van-button {
+    min-height: 44px;
+    font-family: "Share Tech Mono", var(--van-font);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    clip-path: var(--cyber-chamfer-sm);
+    transition: transform 120ms steps(3), color 120ms steps(3), background-color 120ms steps(3), border-color 120ms steps(3), box-shadow 120ms steps(3);
+}
+
+.van-button:hover,
+.van-button:focus-visible {
+    color: var(--cyber-background);
+    background: var(--cyber-accent);
+    border-color: var(--cyber-accent);
+    box-shadow: var(--cyber-shadow-neon);
+    transform: translateY(-1px);
+}
+
+.van-button--small {
+    min-width: 44px;
+    min-height: 36px;
+}
+
+.van-icon {
+    color: inherit;
+    filter: drop-shadow(0 0 4px currentColor);
+}
+
+.van-nav-bar {
+    border-bottom: 1px solid rgba(0, 255, 136, 0.34);
+    box-shadow: 0 0 18px rgba(0, 255, 136, 0.11);
+    backdrop-filter: blur(12px);
+}
+
+.van-nav-bar__title {
+    font-family: Orbitron, "Share Tech Mono", var(--van-font);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.13em;
+    text-shadow: -1px 0 var(--cyber-accent-secondary), 1px 0 var(--cyber-accent-tertiary);
+}
+
+.van-tabbar {
+    border-top: 1px solid rgba(0, 255, 136, 0.34);
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.55), 0 0 18px rgba(0, 255, 136, 0.08);
+    backdrop-filter: blur(12px);
+}
+
+.van-tabbar-item {
+    font-family: "Share Tech Mono", var(--van-font);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.van-field {
+    background: var(--cyber-input);
+}
+
+.van-field__control {
+    color: var(--cyber-accent);
+    caret-color: var(--cyber-accent);
+}
+
+.van-field__label {
+    color: var(--cyber-accent-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.van-popup {
+    overflow: hidden;
+    border: 1px solid rgba(0, 255, 136, 0.42);
+    clip-path: var(--cyber-chamfer);
+    box-shadow: var(--cyber-shadow-neon-lg);
+}
+
+.van-popover__content {
+    overflow: hidden;
+    background: var(--cyber-card);
+    border: 1px solid rgba(0, 255, 136, 0.32);
+    clip-path: var(--cyber-chamfer-sm);
+    box-shadow: var(--cyber-shadow-neon-sm);
+}
+
+.van-popover__action {
+    font-family: "Share Tech Mono", var(--van-font);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.van-tag {
+    font-family: "Share Tech Mono", var(--van-font);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border: 1px solid currentColor;
+    box-shadow: 0 0 8px currentColor;
+}
+
+.cyber-management > .van-list {
+    padding-top: 50px;
+}
+
+.cyber-management .van-cell-group:not(.van-cell-group--inset) {
+    background: transparent;
+}
+
+.cyber-management > .van-list .van-cell {
+    margin: 10px 12px;
+    overflow: hidden;
+    background: linear-gradient(135deg, rgba(18, 18, 26, 0.96), rgba(28, 28, 46, 0.72));
+    border: 1px solid var(--cyber-border);
+    clip-path: var(--cyber-chamfer-sm);
+}
+
+.cyber-management .van-nav-bar .van-cell-group--inset {
+    margin: 0;
+    overflow: visible;
+    background: transparent;
+    border: 0;
+    clip-path: none;
+    box-shadow: none;
+}
+
+.cyber-management .van-nav-bar .van-cell-group--inset::before {
+    display: none;
+}
+
+.custom-title {
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    font-family: "Share Tech Mono", var(--van-font);
+    color: var(--cyber-foreground);
+    text-overflow: ellipsis;
+    text-shadow: 0 0 8px rgba(0, 212, 255, 0.28);
+}
+
+.stdout {
+    padding: 0 14px 16px;
+    margin: 0;
+    color: var(--cyber-accent);
+    white-space: pre-line;
+    background: var(--cyber-background);
+    border-top: 1px solid var(--cyber-border);
+}
+
+.stdout p {
+    padding: 12px;
+    margin: 0;
+    overflow-x: auto;
+    line-height: 1.55;
+    border: 1px solid rgba(0, 255, 136, 0.28);
+    box-shadow: inset 0 0 18px rgba(0, 255, 136, 0.08);
+}
+
+.stdout p::before {
+    color: var(--cyber-accent-tertiary);
+    content: "$ ";
+}
+
+.van-overlay {
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: blur(3px);
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+@keyframes rgbShift {
+    0%,
+    100% {
+        transform: translate(0);
+        text-shadow: -2px 0 var(--cyber-accent-secondary), 2px 0 var(--cyber-accent-tertiary), 0 0 18px rgba(0, 255, 136, 0.35);
+    }
+    46% {
+        transform: translate(0);
+    }
+    48% {
+        transform: translate(-1px, 1px) skewX(-2deg);
+        text-shadow: 2px 0 var(--cyber-accent-secondary), -2px 0 var(--cyber-accent-tertiary), 0 0 22px rgba(0, 255, 136, 0.45);
+    }
+    50% {
+        transform: translate(1px, -1px) skewX(2deg);
+    }
+    52% {
+        transform: translate(0);
+    }
+}
+
+@media (min-width: 720px) {
+    .cyber-page {
+        max-width: 880px;
+        margin: 0 auto;
+    }
+
+    .cyber-management {
+        max-width: 1080px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+    }
+}

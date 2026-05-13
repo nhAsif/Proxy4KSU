@@ -1,0 +1,61 @@
+name: Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout codebase
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: 'npm'
+
+      - name: Build
+        run: |
+          rm -rf node_modules package-lock.json
+          npm install
+          npm run build --if-present
+
+      - name: Copy Files
+        run: |
+          mkdir -p build_assets
+          cp -r ${GITHUB_WORKSPACE}/dist/* ./build_assets/
+          cp ${GITHUB_WORKSPACE}/README.md ./build_assets/README.md
+          cp ${GITHUB_WORKSPACE}/LICENSE ./build_assets/LICENSE
+
+      - name: Create ZIP archive
+        shell: bash
+        run: |
+          pushd build_assets || exit 1
+          touch -mt $(date +%Y01010000) *
+          zip -9vr ../proxy4ksu-webui.zip .
+          popd || exit 1
+          FILE=./proxy4ksu-webui.zip
+          DGST=$FILE.dgst
+          for METHOD in {"md5","sha1","sha256","sha512"}
+          do
+            openssl dgst -$METHOD $FILE | sed 's/([^)]*)//g' >>$DGST
+          done
+
+      - name: Change the name
+        run: |
+          mv build_assets proxy4ksu-webui
+
+      - name: Upload files to Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: proxy4ksu-webui
+          path: |
+            ./proxy4ksu-webui/*
