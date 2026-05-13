@@ -268,7 +268,7 @@ const switchCustomResult = ref([]);
 const switchCustomEditor = ref(false);
 const showSwitchCustomEditor = () => {
     readFile(`${dataDir.value}/custom.txt`).then(value => {
-        switchCustomResult.value = value.trim().split(/\s+/)
+        switchCustomResult.value = value.trim().split(/\s+/).filter(value => value.length > 0)
         switchCustomEditor.value = true
     }).catch(() => {
         saveFile('', `${dataDir.value}/custom.txt`).then(() => {
@@ -276,13 +276,15 @@ const showSwitchCustomEditor = () => {
         })
     })
 }
-const saveSwitchCustom = () => {
+const saveSwitchCustom = async () => {
     let content = ""
     for (let v of switchCustomResult.value) {
-        content = content + v + '\n'
+        if (v.trim().length > 0) {
+            content = content + v.trim() + '\n'
+        }
     }
-    saveFile(content, `${dataDir.value}/custom.txt`)
-    onLoad()
+    await saveFile(content, `${dataDir.value}/custom.txt`)
+    await onLoad()
 }
 // rule
 const ruleResult = ref([])
@@ -785,12 +787,14 @@ const convertObject = (arr, custom) => {
 }
 const initXrayData = async () => {
     await callApi(`get switch all`).then(value => {
-        if (value.custom.length > 0) {
-            const customData = convertObject(value.custom, true);
+        const custom = Array.isArray(value.custom) ? value.custom : [];
+        const result = Array.isArray(value.result) ? value.result : [];
+        if (custom.length > 0) {
+            const customData = convertObject(custom, true);
             allNodeList.value.push(...customData);
             showNodeList.value.push(...customData)
         }
-        const nodeData = convertObject(value.result, false);
+        const nodeData = convertObject(result, false);
         allNodeList.value.push(...nodeData);
         showNodeList.value.push(...nodeData);
         console.info('initXrayData complete')
@@ -804,9 +808,12 @@ const onLoad = async () => {
     finished.value = false;
     showNodeList.value = [];
     allNodeList.value = [];
-    await initXrayData();
-    loading.value = false;
-    finished.value = true;
+    try {
+        await initXrayData();
+    } finally {
+        loading.value = false;
+        finished.value = true;
+    }
 }
 const getConfig = async () => {
     return await readFile(XRAYHELPER_CONFIG).then(value => {
