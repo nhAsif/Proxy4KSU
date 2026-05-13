@@ -1,0 +1,86 @@
+# Example of xrayhelper config
+xrayHelper:
+    # Required, Default value: xray, your core type, support xray, v2ray, sing-box, mihomo, hysteria2
+    coreType: xray
+    # Required, absolute path to your core
+    corePath: /data/adb/xray/bin/xray
+    # Required, absolute path to your core config, can be a directory or single file
+    coreConfig: /data/adb/xray/confs/
+    # Required, absolute path to xrayhelper data directory, include a lot of data of xrayhelper
+    # such as core geodata, v2rayNg's standard subscribe node share url and clash subscribe config
+    dataDir: /data/adb/xray/data/
+    # Required, absolute path to xrayhelper temp directory, include xrayhelper logs, core pid, core logs and so on
+    runDir: /data/adb/xray/run/
+    # Optional, Default value: 100, services' CPU limit(Percentage), set 100 for disable
+    cpuLimit: 5
+    # Optional, Default value: -1, services' Memory limit(MB), set -1 for disable
+    memLimit: 256
+    # Required for xray/v2ray/sing-box, Default value: proxy, the replaced outbound object's tag when you use xrayhelper to switch proxy node
+    proxyTag: proxy
+    # Optional, Default value: false, the replaced outbound object's allowInsecure setting when you use xrayhelper to switch proxy node
+    allowInsecure: false
+    # Optional, your subscribe url, support SIP002, v2rayNg, Hysteria, Hysteria2 standard share url
+    # and also support clash config url, but you need add a prefix "clash+"
+    subList:
+        - https://testsuburl.com
+        - clash+https://testclashsuburl.com
+    # Optional, custom User-Agent for http requests send by xrayhelper
+    userAgent: 'ClashMeta'
+    # Optional, Default value: 223.5.5.5, custom DNS address used by XrayHelper
+    innerDNS: '1.1.1.1'
+    # Optional, Default value: https://www.google.com/generate_204, custom speedtest url used by XrayHelper
+    speedtestUrl: 'https://www.google.com/generate_204'
+clash:
+    # Required for mihomo, Default value: 65533, all dns request will be redirected to the port which listen by mihomo
+    dnsPort: 65533
+    # Optional, if not empty, the template config will replace (or inject to) the actual mihomo config
+    template: /data/adb/xray/mihomoconfs/template.yaml
+adgHome:
+    # Default value: false, start AdGuardHome with core service or not
+    # please run command "xrayhelper update adghome" to install it first
+    # recommended for use with mihomo and hysteria2 only, because their DNS module is incomprehension
+    # improper usage will lead to dns leak
+    enable: false
+    # Required for adgHome, Default value: 127.0.0.1:65530, AdGuardHome's webui
+    address: 127.0.0.1:65530
+    # Required for adgHome, AdGuardHome's workDir(need include config with ${workDir}/config.yaml)
+    workDir: /data/adb/xray/adghomeconfs/
+    # Required for adgHome, Default value: 65531, AdGuardHome's DNS port
+    # Special, when your core is hysteria2, all dns request will be redirected to this port, because hysteria2 don't have DNS module
+    dnsPort: 65531
+proxy:
+    # Required, Default value: tproxy, proxy method you want to use, support tproxy, tun, tun2socks
+    # If you use tun mode, please make sure your core support tun, and configure it correctly
+    # If you use tun2socks mode, please run command "xrayhelper update tun2socks" to install tun2socks first
+    # Usually tproxy has better performance and tun has better udp compatibility
+    method: tun2socks
+    # Required for tproxy, Default value: 65535, port of core tproxy inbound
+    tproxyPort: 65535
+    # Required for tun2socks, Default value: 65534, port of core socks5 inbound
+    socksPort: 65534
+    # Required for tun/tun2socks proxy method, Default value: xtun, marked traffic will be forwarded to this network device in tun/tun2socks mode
+    tunDevice: xtun
+    # Required, Default value: true, enable ipv6 proxy, need your proxy server support proxy ipv6 traffic
+    enableIPv6: true
+    # Required, Default value: true, auto config core's DNS Strategy, if you disable it, please ensure you cannot get any AAAA record from core's dns when not enable IPv6 proxy, otherwise Domain-based proxy rules may not work
+    autoDNSStrategy: true
+    # Required, Default value: blacklist, application package list proxy mode, support blacklist, whitelist
+    # blacklist mode, application traffic in pkgList will be bypassed, others will be marked
+    # whitelist mode, application traffic in pkgList will be marked, others will be bypassed
+    # Special, if pkgList is empty, all application traffic will be marked whatever which proxy mode you use
+    mode: whitelist
+    # Optional, application package list, format is "apk_package_name:user", the apk_package_name support wildcard matching, if the user value is omitted, it will be "0", aka the phone owner
+    pkgList:
+        - cn.*
+        - com.termux:20
+    # Optional, ap interface list, external traffic from apList will be marked
+    apList:
+        - wlan2
+        - rndis0
+    # Optional, ignore interface list, internal traffic from ignoreList will be bypassed
+    ignoreList:
+        - wlan+
+    # Optional, intranet CIDR address list, by default, most intranet ip will be bypassed, add CIDR address to intraList if you want mark these traffic
+    intraList:
+        - 192.168.123.0/24
+        - fd12:3456:789a:bcde::/64
