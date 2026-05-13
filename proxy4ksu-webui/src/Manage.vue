@@ -34,7 +34,7 @@
                 </van-space>
             </template>
         </van-nav-bar>
-        <van-list v-model:loading="loading" :finished="finished" :finished-text="t('manage.no-more')" @load="onLoad">
+        <van-list v-model:loading="loading" :finished="finished" :finished-text="t('manage.no-more')">
             <van-cell-group style="top: 46px;">
                 <van-cell v-for="(item, index) in showNodeList" :key="index" center>
                     <template #title>
@@ -256,7 +256,6 @@ const onSelect = (action) => {
 }
 const loading = ref(false);
 const finished = ref(false);
-let isLoading = false;
 const nodeName = ref('')
 const searchText = ref(false);
 
@@ -787,51 +786,29 @@ const convertObject = (arr, custom) => {
     return convertArr;
 }
 const initXrayData = async () => {
-    const [customResponse, subscribeResponse] = await Promise.allSettled([
-        callApi(`get switch custom`),
-        callApi(`get switch`),
-    ])
-    let loaded = false
-    if (customResponse.status === 'fulfilled') {
-        const custom = Array.isArray(customResponse.value.result) ? customResponse.value.result : [];
-        if (custom.length > 0) {
-            const customData = convertObject(custom, true)
-            allNodeList.value.push(...customData)
+    await callApi(`get switch all`).then(value => {
+        if (value.custom.length > 0) {
+            const customData = convertObject(value.custom, true);
+            allNodeList.value.push(...customData);
             showNodeList.value.push(...customData)
-            loaded = true
         }
-    }
-    if (subscribeResponse.status === 'fulfilled') {
-        const result = Array.isArray(subscribeResponse.value.result) ? subscribeResponse.value.result : [];
-        if (result.length > 0) {
-            const nodeData = convertObject(result, false)
-            allNodeList.value.push(...nodeData)
-            showNodeList.value.push(...nodeData)
-            loaded = true
-        }
-    }
-    if (!loaded && customResponse.status === 'rejected' && subscribeResponse.status === 'rejected') {
-        showToast(t('manage.load-switch-data-failed') + customResponse.reason + '; ' + subscribeResponse.reason)
-    }
-    console.info('initXrayData complete')
+        const nodeData = convertObject(value.result, false);
+        allNodeList.value.push(...nodeData);
+        showNodeList.value.push(...nodeData);
+        console.info('initXrayData complete')
+    }).catch(ex => {
+        showToast(t('manage.load-switch-data-failed') + ex)
+    })
 }
 const onLoad = async () => {
-    if (isLoading) {
-        return;
-    }
     console.info('onLoad');
-    isLoading = true;
     loading.value = true;
     finished.value = false;
     showNodeList.value = [];
     allNodeList.value = [];
-    try {
-        await initXrayData();
-    } finally {
-        loading.value = false;
-        finished.value = true;
-        isLoading = false;
-    }
+    await initXrayData();
+    loading.value = false;
+    finished.value = true;
 }
 const getConfig = async () => {
     return await readFile(XRAYHELPER_CONFIG).then(value => {
@@ -860,11 +837,7 @@ const initStatus = () => {
                 actions.push({text: t('manage.ruleset-manage'), value: 'ruleset', disabled: false})
             }
             if (core_type === 'xray' || core_type === 'sing-box') {
-                // van-list will auto-trigger @load via immediate-check;
-                // only manually trigger if the list is already finished (e.g. refresh after save)
-                if (finished.value) {
-                    onLoad()
-                }
+                onLoad()
             }
         }
     })
