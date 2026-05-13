@@ -2,8 +2,6 @@ English | [简体中文](README_zh_CN.md)
 
 # Proxy4KSU
 
-~~A fork from [V2ray for Android](https://github.com/Magisk-Modules-Repo/v2ray)~~
-
 This is a Magisk module for Xray/V2ray/Sing-box/Mihomo/Hysteria2, and includes xrayhelper binaries for arm64, x64.
 
 ## Disclaimer

@@ -2,8 +2,6 @@
 
 # Proxy4KSU
 
-~~该项目 fork 自 [V2ray for Android](https://github.com/Magisk-Modules-Repo/v2ray)。~~
-
 本项目为 Xray/V2ray/Sing-box/Mihomo/Hysteria2 的 Magisk 模块，支持 arm64， x64 架构。
 
 ## 免责声明
