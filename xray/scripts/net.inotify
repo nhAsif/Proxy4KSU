@@ -3,8 +3,35 @@
 
 xrayhelper=/data/adb/xray/bin/xrayhelper
 xrayhelper_conf=/data/adb/xray/xrayhelper.yml
+mod_dir=/data/adb/modules/proxy4ksu
+run_dir=/data/adb/xray/run
+lock_dir=${run_dir}/net_restart.lock
 events=$1
 
-if [ "$events" = "w" ]; then
-    ${xrayhelper} -c ${xrayhelper_conf} proxy refresh
-fi
+restart_xray() {
+    echo "net.inotify: network changed, restarting core and proxy"
+    ${xrayhelper} -c ${xrayhelper_conf} proxy disable
+    ${xrayhelper} -c ${xrayhelper_conf} service restart &&
+        ${xrayhelper} -c ${xrayhelper_conf} proxy enable
+}
+
+main() {
+    if [ -f /data/adb/xray/manual ] || [ -f ${mod_dir}/disable ]; then
+        return
+    fi
+    case "$events" in
+        *w*) ;;
+        *) return ;;
+    esac
+    mkdir -p ${run_dir}
+    if ! mkdir ${lock_dir} 2>/dev/null; then
+        return
+    fi
+    (
+        sleep 3
+        restart_xray
+        rmdir ${lock_dir}
+    ) &
+}
+
+main
