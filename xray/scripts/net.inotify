@@ -23,8 +23,19 @@ wifi_connected() {
     return 1
 }
 
+mobile_connected() {
+    ip route get 1.1.1.1 2>/dev/null | grep -Eq ' dev (rmnet|ccmni|wwan|rndis|eth)[^ ]* ' && return 0
+    for iface in /sys/class/net/rmnet* /sys/class/net/ccmni* /sys/class/net/wwan* /sys/class/net/rndis* /sys/class/net/eth*; do
+        [ -d "$iface" ] || continue
+        dev=${iface##*/}
+        [ "$(cat "$iface/operstate" 2>/dev/null)" = "up" ] || continue
+        ip addr show dev "$dev" 2>/dev/null | grep -q 'inet ' && return 0
+    done
+    return 1
+}
+
 stop_xray() {
-    echo "net.inotify: Wi-Fi connected, stopping core and proxy"
+    echo "net.inotify: $1, stopping core and proxy"
     ${xrayhelper} -c ${xrayhelper_conf} proxy disable
     ${xrayhelper} -c ${xrayhelper_conf} service stop
 }
@@ -50,10 +61,16 @@ main() {
     fi
     (
         sleep 3
-        if stop_when_wifi_enabled && wifi_connected; then
-            stop_xray
-        else
+        if wifi_connected; then
+            if stop_when_wifi_enabled; then
+                stop_xray "Wi-Fi connected"
+            else
+                restart_xray
+            fi
+        elif mobile_connected; then
             restart_xray
+        else
+            stop_xray "no network"
         fi
         rmdir ${lock_dir}
     ) &

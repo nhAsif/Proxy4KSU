@@ -7,8 +7,7 @@ monitor_dir=$2
 monitor_file=$3
 
 start_xray() {
-    ${xrayhelper} -c ${xrayhelper_conf} service start &&
-        ${xrayhelper} -c ${xrayhelper_conf} proxy enable
+    /data/adb/xray/scripts/net.inotify w
 }
 
 stop_xray() {
