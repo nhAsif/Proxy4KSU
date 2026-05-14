@@ -25,6 +25,7 @@ proxy:
     tunDevice: xtun
     enableIPv6: true
     autoDNSStrategy: true
+    stopWhenWifi: false
     mode: blacklist
     pkgList:
         - 'com.tencent.*'

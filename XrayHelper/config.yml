@@ -64,6 +64,8 @@ proxy:
     enableIPv6: true
     # Required, Default value: true, auto config core's DNS Strategy, if you disable it, please ensure you cannot get any AAAA record from core's dns when not enable IPv6 proxy, otherwise Domain-based proxy rules may not work
     autoDNSStrategy: true
+    # Optional, Default value: false, stop core and disable proxy when Wi-Fi is connected; mobile data changes will start/restart it again
+    stopWhenWifi: false
     # Required, Default value: blacklist, application package list proxy mode, support blacklist, whitelist
     # blacklist mode, application traffic in pkgList will be bypassed, others will be marked
     # whitelist mode, application traffic in pkgList will be marked, others will be bypassed

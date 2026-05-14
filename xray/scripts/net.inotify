@@ -8,6 +8,27 @@ run_dir=/data/adb/xray/run
 lock_dir=${run_dir}/net_restart.lock
 events=$1
 
+stop_when_wifi_enabled() {
+    sed -n 's/^[[:space:]]*stopWhenWifi:[[:space:]]*//p' ${xrayhelper_conf} | tail -n 1 | grep -qi '^true'
+}
+
+wifi_connected() {
+    ip route get 1.1.1.1 2>/dev/null | grep -Eq ' dev (wlan|wifi|swlan)[^ ]* ' && return 0
+    for iface in /sys/class/net/wlan* /sys/class/net/wifi* /sys/class/net/swlan*; do
+        [ -d "$iface" ] || continue
+        dev=${iface##*/}
+        [ "$(cat "$iface/operstate" 2>/dev/null)" = "up" ] || continue
+        ip addr show dev "$dev" 2>/dev/null | grep -q 'inet ' && return 0
+    done
+    return 1
+}
+
+stop_xray() {
+    echo "net.inotify: Wi-Fi connected, stopping core and proxy"
+    ${xrayhelper} -c ${xrayhelper_conf} proxy disable
+    ${xrayhelper} -c ${xrayhelper_conf} service stop
+}
+
 restart_xray() {
     echo "net.inotify: network changed, restarting core and proxy"
     ${xrayhelper} -c ${xrayhelper_conf} proxy disable
@@ -29,7 +50,11 @@ main() {
     fi
     (
         sleep 3
-        restart_xray
+        if stop_when_wifi_enabled && wifi_connected; then
+            stop_xray
+        else
+            restart_xray
+        fi
         rmdir ${lock_dir}
     ) &
 }

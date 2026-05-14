@@ -49,6 +49,7 @@ var Config struct {
 		TunDevice       string   `default:"xtun" yaml:"tunDevice"`
 		EnableIPv6      bool     `default:"true" yaml:"enableIPv6"`
 		AutoDNSStrategy bool     `default:"true" yaml:"autoDNSStrategy"`
+		StopWhenWifi    bool     `default:"false" yaml:"stopWhenWifi"`
 		Mode            string   `default:"blacklist" yaml:"mode"`
 		PkgList         []string `yaml:"pkgList"`
 		ApList          []string `yaml:"apList"`
