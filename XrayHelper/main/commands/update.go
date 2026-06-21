@@ -28,7 +28,11 @@ const (
 	hysteriaUrl          = "https://api.github.com/repos/apernet/hysteria/releases"
 	yacdMetaDownloadUrl  = "https://github.com/MetaCubeX/yacd/archive/gh-pages.zip"
 	metacubexDownloadUrl = "https://github.com/MetaCubeX/metacubexd/releases/latest/download/compressed-dist.tgz"
-	xrayCoreDownloadUrl  = "https://github.com/XTLS/Xray-core/releases/latest/download/Xray-android-arm64-v8a.zip"
+	// Pinned to v26.1.23 (the last release that honors "allowInsecure" at runtime).
+	// v26.2.6+ removed the option and auto-disable it after 2026-06-01, breaking
+	// insecure/self-signed nodes. Do NOT change to /latest/ unless those nodes are
+	// migrated to "pinnedPeerCertSha256".
+	xrayCoreDownloadUrl  = "https://github.com/XTLS/Xray-core/releases/download/v26.1.23/Xray-android-arm64-v8a.zip"
 	v2rayCoreDownloadUrl = "https://github.com/v2fly/v2ray-core/releases/latest/download/v2ray-android-arm64-v8a.zip"
 	geoipDownloadUrl     = "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat"
 	geositeDownloadUrl   = "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat"

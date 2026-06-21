@@ -173,6 +173,9 @@ func GetStreamSettingsObjectXray(addon *Addon, network string, security string) 
 		if len(addon.Sni) > 0 {
 			tlsSettingsObject.Set("serverName", addon.Sni)
 		}
+		// NOTE: "allowInsecure" only works on xray-core <= v26.1.23 (pinned in
+		// commands/update.go). Newer cores reject it. Migrate to "pinnedPeerCertSha256"
+		// if you ever bump the pinned core version.
 		if builds.Config.XrayHelper.AllowInsecure {
 			tlsSettingsObject.Set("allowInsecure", true)
 		} else {

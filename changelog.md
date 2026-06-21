@@ -1,4 +1,8 @@
 ## Changelog
+### Module v3.4.7
+- fix: pin xray-core to v26.1.23 so `allowInsecure` keeps working (newer cores removed it and auto-disable it after 2026-06-01)
+- ship `allowInsecure: true` by default
+
 ### Module
 - disable net.inotify by default [by powerAn2020](https://github.com/powerAn2020)
 - add mihomo panel selection [by MNDIA](https://github.com/MNDIA)
