@@ -11,6 +11,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout codebase
@@ -68,27 +70,45 @@ jobs:
           cp ${GITHUB_WORKSPACE}/README.md ./build_assets/
           cp ${GITHUB_WORKSPACE}/README_zh_CN.md ./build_assets/
 
+      - name: Read module version
+        id: version
+        shell: bash
+        run: |
+          VERSION=$(grep '^version=' module.prop | cut -d= -f2)
+          echo "tag=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "zip=Proxy4KSU-${VERSION#v}.zip" >> "$GITHUB_OUTPUT"
+
       - name: Create ZIP archive
         shell: bash
         run: |
+          ZIP="${{ steps.version.outputs.zip }}"
           pushd build_assets || exit 1
           touch -mt $(date +%Y01010000) *
-          zip -9vr ../Proxy4KSU.zip .
+          zip -9vr "../${ZIP}" .
           popd || exit 1
-          FILE=./Proxy4KSU.zip
-          DGST=$FILE.dgst
+          FILE="./${ZIP}"
+          DGST="$FILE.dgst"
           for METHOD in {"md5","sha1","sha256","sha512"}
           do
-            openssl dgst -$METHOD $FILE | sed 's/([^)]*)//g' >>$DGST
+            openssl dgst -$METHOD "$FILE" | sed 's/([^)]*)//g' >>"$DGST"
           done
-
-      - name: Change the name
-        run: |
-          mv build_assets Proxy4KSU
 
       - name: Upload files to Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: Proxy4KSU
           path: |
-            ./Proxy4KSU/*
+            ./${{ steps.version.outputs.zip }}
+            ./${{ steps.version.outputs.zip }}.dgst
+
+      - name: Publish GitHub Release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: ${{ steps.version.outputs.tag }}
+          body_path: changelog.md
+          fail_on_unmatched_files: true
+          files: |
+            ${{ steps.version.outputs.zip }}
+            ${{ steps.version.outputs.zip }}.dgst
